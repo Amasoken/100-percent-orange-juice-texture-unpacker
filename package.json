@@ -14,11 +14,18 @@
     "dependencies": {
         "jszip": "^3.10.1"
     },
+    "devDependencies": {
+        "eslint": "8.27.0",
+        "eslint-config-prettier": "8.5.0",
+        "prettier": "2.7.1"
+    },
     "scripts": {
         "start": "node index.js",
         "configure": "node scripts/configure.js",
         "exportTextures": "node index.js",
-        "exportNames": "node scripts/exportNames.js"
+        "exportNames": "node scripts/exportNames.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix ."
     },
     "engines": {
         "node": ">=10.24.1"
