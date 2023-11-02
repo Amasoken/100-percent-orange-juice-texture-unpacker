@@ -7,6 +7,9 @@ async function exportTextures(config) {
     let errorCount = 0;
     const conversionPromises = [];
 
+    const exportDate = new Date();
+    const exportDirName = 'EXPORT_' + exportDate.toISOString().replace(/-|:/g, '.').replace('T', '_').replace('Z', '');
+
     const exportDirPath = path.resolve(config.OutputDirectory, exportDirName);
     const gameDataDirPath = path.resolve(config.GameDirectory, 'data');
 

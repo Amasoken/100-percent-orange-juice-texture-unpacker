@@ -37,7 +37,7 @@ async function exportTextureNames(config) {
 
     console.log('Done!');
     console.log('Parsed archives: ' + config.ExportArchives.join(', '));
-    console.log('Output file: ', path.resolve(OUTPUT_FILE));
+    console.log('Output file: ' + path.resolve(OUTPUT_FILE));
 }
 
 module.exports = {
