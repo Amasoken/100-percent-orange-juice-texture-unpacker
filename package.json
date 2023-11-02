@@ -22,8 +22,8 @@
     "scripts": {
         "start": "node index.js",
         "configure": "node scripts/configure.js",
-        "exportTextures": "node index.js",
-        "exportNames": "node scripts/exportNames.js",
+        "export:textures": "node index.js",
+        "export:names": "node scripts/exportNames.js",
         "lint": "eslint .",
         "lint:fix": "eslint --fix ."
     },

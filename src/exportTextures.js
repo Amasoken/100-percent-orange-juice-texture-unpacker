@@ -1,11 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { createDirectory, getZipContents, convertImageToPNG } = require('./utils/file');
+const { createDirectory, getZipContents, convertToPNG, deleteDataFiles } = require('./utils/file');
 
 async function exportTextures(config) {
     let exportCount = 0;
     let errorCount = 0;
-    const exportDirName = 'EXPORT_' + Date.now();
+    const conversionPromises = [];
+
     const exportDirPath = path.resolve(config.OutputDirectory, exportDirName);
     const gameDataDirPath = path.resolve(config.GameDirectory, 'data');
 
@@ -14,7 +15,7 @@ async function exportTextures(config) {
     const archives = files.filter((name) => config.ExportArchives.includes(name));
 
     for (const archiveFullName of archives) {
-        console.log('\n=====\nParsing [' + archiveFullName + ']');
+        console.log('\n=====\nParsing [' + archiveFullName + ']...');
         const archiveName = archiveFullName.split('.pak')[0];
         const currentExportDirPath = path.resolve(exportDirPath, archiveName);
         await createDirectory(currentExportDirPath);
@@ -26,10 +27,9 @@ async function exportTextures(config) {
         }
 
         const filteredImages = zip.filter((relativePath) => config.SearchExpression.test(relativePath));
+        console.log('Extracting images from [' + archiveFullName + ']...');
 
         for (const image of filteredImages) {
-            console.log([exportDirName, archiveName, image.name.split('.dat')[0]].join(' / '));
-
             const imageData = await image.async('nodebuffer');
 
             let imageName = image.name;
@@ -38,21 +38,24 @@ async function exportTextures(config) {
             const imageFullPath = path.resolve(currentExportDirPath, imageName);
             await fs.promises.writeFile(imageFullPath, imageData);
 
-            if (config.ConvertToPNG) {
-                await convertImageToPNG(imageFullPath).catch(() => {
-                    console.log('Error converting image ' + imageName + ' to PNG');
-                    errorCount++;
-                });
-            }
-
             exportCount++;
+        }
+
+        if (config.ConvertToPNG) {
+            console.log('Converting [' + archiveFullName + '] to png...');
+            const promise = convertToPNG(currentExportDirPath).then(() => deleteDataFiles(currentExportDirPath));
+            conversionPromises.push(promise);
         }
     }
 
-    console.log('\n=====\nDone!');
-    console.log('Exported ' + exportCount + ' images.');
-    if (errorCount) console.log('Encountered ' + errorCount + ' errors.');
-    console.log('Check your exports in ' + exportDirPath);
+    if (config.ConvertToPNG) console.log('\n=====\nWaiting for png conversion to finish...');
+
+    Promise.all(conversionPromises).then(() => {
+        console.log('\n=====\nDone!');
+        console.log('Exported ' + exportCount + ' images.');
+        if (errorCount) console.log('Encountered ' + errorCount + ' errors.');
+        console.log('Check your exports in ' + exportDirPath);
+    });
 }
 
 module.exports = {
