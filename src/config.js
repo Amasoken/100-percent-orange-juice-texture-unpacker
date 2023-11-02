@@ -90,7 +90,7 @@ const parseRegex = (value) => {
 
     const regexWithFlags = value.match(/\/(.*?)\/([gimsuy]*)$/);
     if (regexWithFlags) {
-        const [_, pattern, flags] = regexWithFlags;
+        const [, pattern, flags] = regexWithFlags;
         regexParams.push(pattern, flags);
     } else {
         regexParams.push(value);

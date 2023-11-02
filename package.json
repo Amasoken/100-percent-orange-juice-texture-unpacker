@@ -15,9 +15,9 @@
         "jszip": "^3.10.1"
     },
     "devDependencies": {
-        "eslint": "8.27.0",
-        "eslint-config-prettier": "8.5.0",
-        "prettier": "2.7.1"
+        "eslint": "^8.52.0",
+        "eslint-config-prettier": "^9.0.0",
+        "prettier": "^3.0.3"
     },
     "scripts": {
         "start": "node index.js",
