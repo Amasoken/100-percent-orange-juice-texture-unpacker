@@ -7,7 +7,7 @@ const config = {
     ConvertToPNG: false,
     RenameToDDS: true,
     ExportArchives: [],
-    SearchExpression: '',
+    SearchExpression: new RegExp(''), // match every file by default
 };
 
 const DDSTRONK_PATH = './DDStronk.exe';
@@ -76,15 +76,6 @@ async function validateConfig() {
             process.exit();
         });
     }
-
-    // SearchExpression
-    try {
-        config.SearchExpression = new RegExp(config.SearchExpression);
-    } catch (error) {
-        console.log(ErrorMessages.SearchExpression);
-        console.error(error);
-        process.exit();
-    }
 }
 
 const isParamName = (value) => value.startsWith('[') && value.endsWith(']');
@@ -94,9 +85,25 @@ const parseBoolean = (value) => {
     return true;
 };
 
-const parseRegExp = (value) => {
-    if (value.startsWith('/') && value.endsWith('/')) return value.substring(1, value.length - 1);
-    return value;
+const parseRegex = (value) => {
+    const regexParams = [];
+
+    const regexWithFlags = value.match(/\/(.*?)\/([gimsuy]*)$/);
+    if (regexWithFlags) {
+        const [_, pattern, flags] = regexWithFlags;
+        regexParams.push(pattern, flags);
+    } else {
+        regexParams.push(value);
+    }
+
+    // SearchExpression
+    try {
+        return new RegExp(...regexParams);
+    } catch (error) {
+        console.log(ErrorMessages.SearchExpression);
+        console.error(error);
+        process.exit();
+    }
 };
 
 async function loadConfig() {
@@ -131,7 +138,7 @@ async function loadConfig() {
                     break;
 
                 case 'SearchExpression':
-                    config[currentKey] = parseRegExp(line);
+                    config[currentKey] = parseRegex(line);
                     break;
 
                 default:
