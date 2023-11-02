@@ -1,0 +1,33 @@
+{
+    "name": "100-percent-orange-juice-texture-unpacker",
+    "author": {
+        "name": "Amasoken",
+        "url": "https://github.com/Amasoken"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Amasoken/100-percent-orange-juice-texture-unpacker.git"
+    },
+    "version": "0.0.1",
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "jszip": "^3.10.1"
+    },
+    "devDependencies": {
+        "eslint": "^8.52.0",
+        "eslint-config-prettier": "^9.0.0",
+        "prettier": "^3.0.3"
+    },
+    "scripts": {
+        "start": "node index.js",
+        "configure": "node scripts/configure.js",
+        "export:textures": "node index.js",
+        "export:names": "node scripts/exportNames.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix ."
+    },
+    "engines": {
+        "node": ">=10.24.1"
+    }
+}
